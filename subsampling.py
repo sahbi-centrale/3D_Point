@@ -45,12 +45,15 @@ import time
 def cloud_decimation(points, colors, labels, factor):
 
     # YOUR CODE
-    decimated_points = None
-    decimated_colors = None
-    decimated_labels = None
+    decimated_points = points[::factor]
+    decimated_colors = points[::factor]
+    decimated_labels = labels[::factor]
 
     return decimated_points, decimated_colors, decimated_labels
 
+
+ 
+    
 
 
 
@@ -74,7 +77,7 @@ if __name__ == '__main__':
     #
 
     # Path of the file
-    file_path = '../data/indoor_scan.ply'
+    file_path = 'indoor_scan.ply'
 
     # Load point cloud
     data = read_ply(file_path)

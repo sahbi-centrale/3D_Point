@@ -25,6 +25,7 @@
 # Import numpy package and name it "np"
 import numpy as np
 
+
 # Import functions to read and write ply files
 from ply import write_ply, read_ply
 
@@ -32,8 +33,34 @@ from ply import write_ply, read_ply
 # ------------------------------------------------------------------------------------------
 #
 #           Functions
-#       \***************/
-#
+
+
+def transform_point_cloud(points):
+    """
+    Apply transformations to a point cloud.
+    
+    Parameters:
+    points (np.ndarray): A N x 3 array of points.
+
+    Returns:
+    np.ndarray: Transformed points.
+    """
+    # a) Center the cloud on its centroid
+    centroid = np.mean(points, axis=0)
+    centered_points = points - centroid
+
+    # b) Divide its scale by a factor of 2
+    scaled_points = centered_points / 2
+
+    # c) Recenter the cloud at the original position
+    recentered_points = scaled_points + centroid
+
+    # d) Apply a -10cm translation along y-axis
+    recentered_points[:, 1] -= 0.1
+
+    return recentered_points
+
+
 #
 #   Here you can define useful functions to be used in the main
 #
@@ -55,7 +82,7 @@ if __name__ == '__main__':
     #
 
     # Path of the file
-    file_path = '../data/bunny.ply'
+    file_path = 'bunny.ply'
 
     # Load point cloud
     data = read_ply(file_path)
@@ -73,7 +100,7 @@ if __name__ == '__main__':
     #
 
     # Replace this line by your code
-    transformed_points = points
+    transformed_points = transform_point_cloud(points)
 
     # Save point cloud
     # *********************

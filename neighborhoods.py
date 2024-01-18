@@ -45,21 +45,28 @@ import time
 #
 
 
+
+
 def brute_force_spherical(queries, supports, radius):
-
-    # YOUR CODE
-    neighborhoods = None
-
+    neighborhoods = []
+    for query in queries:
+        # Calculate the Euclidean distance from the query to all supports
+        distances = np.sqrt(np.sum((supports - query) ** 2, axis=1))
+        # Find the indices of points within the specified radius
+        neighborhood = np.where(distances <= radius)[0]
+        neighborhoods.append(neighborhood)
     return neighborhoods
 
 
 def brute_force_KNN(queries, supports, k):
-
-    # YOUR CODE
-    neighborhoods = None
-
+    neighborhoods = []
+    for query in queries:
+        # Calculate the Euclidean distance from the query to all supports
+        distances = np.sqrt(np.sum((supports - query) ** 2, axis=1))
+        # Find the indices of the k nearest neighbors
+        neighborhood = np.argsort(distances)[:k]
+        neighborhoods.append(neighborhood)
     return neighborhoods
-
 
 
 
@@ -83,7 +90,7 @@ if __name__ == '__main__':
     #
 
     # Path of the file
-    file_path = '../data/indoor_scan.ply'
+    file_path = 'indoor_scan.ply'
 
     # Load point cloud
     data = read_ply(file_path)
@@ -96,7 +103,7 @@ if __name__ == '__main__':
     #
 
     # If statement to skip this part if you want
-    if True:
+    if False:
 
         # Define the search parameters
         neighbors_num = 100
@@ -135,12 +142,28 @@ if __name__ == '__main__':
     #
 
     # If statement to skip this part if wanted
-    if False:
-
-        # Define the search parameters
+    if True:
+        tree = KDTree(points, leaf_size=20)
         num_queries = 1000
+        # Define the search parameters
+        random_indices = np.random.choice(points.shape[0], num_queries, replace=False)
+        queries = points[random_indices, :]
+        # Timing the spherical neighborhood search using KDTree
+        start_time = time.time()
+        indices_spherical = tree.query_radius(queries, 20)
+        end_time = time.time()
+        time_spherical = end_time - start_time
 
-        # YOUR CODE
+    # Timing the k-nearest neighbors search using KDTree
+        k = 5  # Example for k nearest neighbors
+        start_time = time.time()
+        distances_knn, indices_knn = tree.query(queries, 5)
+        end_time = time.time()
+        time_knn = end_time - start_time
+
+        time_spherical, time_knn
+
+        
         
         
         
